@@ -39,9 +39,5 @@ def route_external():
         return res.json()
     else:
         page= str(request.args.get("page"))
-        url_parts = list(urlparse("https://reqres.in/api/users"))
-        query = dict(parse_qsl(url_parts[4]))
-        query.update({"page":page})
-        url_parts[4] = urlencode(query)
-        return redirect(urlunparse(url_parts))
-
+        res = requests.get("https://reqres.in/api/users", params={"page":page})
+        return res.json()
