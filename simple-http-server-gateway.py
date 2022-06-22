@@ -38,12 +38,6 @@ class MyHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({"name": query["name"]}).encode("utf-8"))
             self.wfile.flush()
-
-            # self.send_response(200)
-            # self.send_header("Content-type", "application/json")
-            # self.end_headers()
-            # self.wfile.write(json.dumps({'is_rpc': self.is_rpc}).encode("utf-8"))
-            # self.wfile.flush()
         elif get_url_last_slash_part(self.path) == '/route2':
             query = dict(parse_qsl(urlparse(self.path).query))
             scheme, netloc, path, query_string, fragment = urlsplit(self.path)
@@ -64,7 +58,28 @@ class MyHTTPHandler(http.server.SimpleHTTPRequestHandler):
             return super().do_GET()
 
     def do_POST(self):
-        pass
+        if get_url_last_slash_part(self.path) == '/route1':
+            content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+            post_data = self.rfile.read(content_length) # <--- Gets the data itself
+            post_data = json.loads(post_data)
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(post_data).encode("utf-8"))
+            self.wfile.flush()
+        if get_url_last_slash_part(self.path) == '/route2':
+            content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+            post_data = self.rfile.read(content_length) # <--- Gets the data itself
+            post_data = json.loads(post_data)
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            res = requests.post("https://reqres.in/api/users", json=post_data)
+            self.wfile.write(json.dumps(res.json()).encode("utf-8"))
+            self.wfile.flush()
+        else:
+            self.send_response(200)
+
 
 
 def start_server() -> int:

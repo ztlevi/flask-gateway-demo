@@ -19,6 +19,8 @@ POST: http://127.0.0.1:5000/route1 with name in the form field
 
 ## External route
 > Note: use VSCode Thunder client to test
+> For Flask, use form in POST
+> For simple http server, use json in POST
 
 GET: http://127.0.0.1:5000/route2?page=2
 POST: http://localhost:5000/route2 with name and job in form fields
